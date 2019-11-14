@@ -25,7 +25,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.authentication import BaseAuthentication
 
 # Guardian Stuff
-from guardian.base import exceptions as exc
+from first import exceptions as exc
 
 from .services import get_user_for_token
 

@@ -19,6 +19,7 @@ from .response import Response
 from rest_framework import status
 from first.helpers import MultipleSerializerMixin
 from . import models, serializers, helpers
+from django.contrib.auth import logout
 
 
 class AuthViewSet(MultipleSerializerMixin, viewsets.GenericViewSet):
@@ -35,3 +36,15 @@ class AuthViewSet(MultipleSerializerMixin, viewsets.GenericViewSet):
         ctx = self.get_serializer_context()
         data = serializers.AuthUserSerializer(user, context=ctx).data
         return helpers.customResponse(data,200,True)
+
+    @action(methods=['GET', ], detail=False, permission_classes=[IsAuthenticated, ])
+    def check_token(self, request):
+        return helpers.customResponse({"success":True},200,True)
+
+    @action(methods=['POST', ], detail=False, permission_classes=[IsAuthenticated, ])
+    def logout(self, request):
+        """
+        Calls Django logout method; Does not work for UserTokenAuth.
+        """
+        logout(request)
+        return helpers.customResponse({"message": "Successfully logged out."},200,True)

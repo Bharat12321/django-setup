@@ -45,6 +45,9 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'first.User'
 
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -54,6 +57,48 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+REST_FRAMEWORK = {
+    # 'DEFAULT_PAGINATION_CLASS': 'guardian.base.api.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 3000,
+
+    # Default renderer classes for Rest framework
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+
+    # 'Accept' header based versioning
+    # http://www.django-rest-framework.org/api-guide/versioning/
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.AcceptHeaderVersioning',
+    'DEFAULT_VERSION': '1.0',
+    'ALLOWED_VERSIONS': ['1.0', ],
+    'VERSION_PARAMETER': 'version',
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10000/day',
+    },
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+
+        # Primary api authentication
+        'first.authentication.backends.SessionTokenAuthentication',
+
+        # Mainly used for api debug.
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    # 'EXCEPTION_HANDLER': 'guardian.base.exceptions.exception_handler',
+}
+
 
 ROOT_URLCONF = 'test_auth.urls'
 
